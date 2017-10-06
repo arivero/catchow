@@ -82,8 +82,8 @@ int main(int argc, char* argv[]) {
             <<90*23,31*12>> or 45*23,31*24
         */
         //sha256cat<<<40*23,31*15*2>>>(o,h);
-        dim3 threadsPerBlock(2,31*12);
-        sha256cat<<<450,threadsPerBlock>>>(o,h);
+        dim3 threadsPerBlock(1,31*12);
+        sha256cat<<<45*2,threadsPerBlock>>>(o,h);
         //cudaMemcpy(hash,h,64*31*12*100,cudaMemcpyDeviceToHost);
         //printf("output %.64s\n",&hash[64*(12+31*5+31*12*65)]);
         //printf("output %.64s\n",hash);
