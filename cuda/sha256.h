@@ -34,7 +34,6 @@ __device__ unsigned int sigma0(unsigned int x);
 __device__ unsigned int sigma1(unsigned int x);
 __device__ unsigned int stringLength(unsigned char* str);
 //__device__ void testReduceSha256();
-__device__ void testSha256LongInput();
 
 __forceinline__ __device__ unsigned int choice(unsigned int x, unsigned int y,
 		unsigned int z) {

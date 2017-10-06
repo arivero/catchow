@@ -3,11 +3,6 @@
 #include <stdio.h>
 #include "sha256.h"
 
-//
-// sha256 taken from birthdayAttack demo of https://github.com/SethosII/birthday-attack/blob/master/src/sha256.cu
-//
-
-
 inline void __cudaCheck(cudaError err, const char* file, int line) {
 #ifndef NDEBUG
         if (err != cudaSuccess) {
@@ -59,6 +54,7 @@ __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout) {
         long int hilo=(blockDim.y*blockIdx.y+threadIdx.y)*blockDim.x*gridDim.x +(blockDim.x*blockIdx.x+threadIdx.x);
         //long int hilo= ( blockIdx.x*blockDim.x + threadIdx.x);
         //int letra = hilo/(100*31*12);
+        hilo = hilo /10 ; //para ver si ahora tarda 90 segundos o menos
         int fecha= hilo; //- letra*31*12*100;
         hilo=fecha+letra*(90*31*12);  //solo 90 el year!!
         int year= fecha / (31*12);
@@ -198,6 +194,3 @@ __device__ void sha256Transform(sha256Context* context, unsigned char* data) {
 }
 
 
-__device__ void testSha256LongInput() {
-        printf("deprecated test\n");
-}

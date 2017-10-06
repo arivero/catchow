@@ -35,7 +35,6 @@ int myStrCmp(const void *s1, const void *s2) {
 int main(int argc, char* argv[]) {
         //cudaSetDevice();
 #ifndef NDEBUG
-	//hashtestGPU<<<1, 1>>>();
 	cudaCheck(cudaDeviceReset());
 #endif
         FILE *f = fopen("./somehashes.txt", "r");
@@ -84,7 +83,7 @@ int main(int argc, char* argv[]) {
         */
         //sha256cat<<<40*23,31*15*2>>>(o,h);
         dim3 threadsPerBlock(2,31*12);
-        sha256cat<<<45,threadsPerBlock>>>(o,h);
+        sha256cat<<<450,threadsPerBlock>>>(o,h);
         //cudaMemcpy(hash,h,64*31*12*100,cudaMemcpyDeviceToHost);
         //printf("output %.64s\n",&hash[64*(12+31*5+31*12*65)]);
         //printf("output %.64s\n",hash);
@@ -120,6 +119,3 @@ int main(int argc, char* argv[]) {
 	cudaCheck(cudaDeviceReset());
 }
 
-__global__ void hashtestGPU() {
-	testSha256LongInput();
-}
