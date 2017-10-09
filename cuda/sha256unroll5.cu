@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include "sha256.h"
 
+#define dec(a) ((a)+48)
+//If a<10 add '0' (48) else add 87 ('a'-10)
+#define hex(a) ((a)+((a)<10?48:87))
+
 __constant__  char dni[]="TRWAGMYFPDXBNJZSQVHLCKE";
 __constant__  unsigned int C[64] = { 0x428a2f98, 0x71374491, 0xb5c0fbcf,
 		0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98,
@@ -19,7 +23,6 @@ __constant__  unsigned int C[64] = { 0x428a2f98, 0x71374491, 0xb5c0fbcf,
 
 
 __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout) {
-        const char hex[]="0123456789abcdef";
         register unsigned int context_state[8];
 	register unsigned int shadowRegister[8];
 	register unsigned int messageSchedule[16]; 
@@ -40,8 +43,8 @@ __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout) {
         for (int j=0; j < 16; j++) { messageSchedule[j]=0x00000000;}
         messageSchedule[0] = (datain[0] << 24)|(datain[1] << 16)|(datain[2] << 8)|(datain[3]);
         messageSchedule[1] = (datain[4] << 24)|(dni[letra] << 16)|(datain[6] << 8)|(datain[7]);
-        messageSchedule[2] = (hex[year/10] << 24)|(hex[year%10] << 16)|(hex[mes/10] << 8)|(hex[mes%10]);
-        messageSchedule[3] = (hex[dia/10] << 24)|(hex[dia%10] << 16)|(datain[14] << 8)|(datain[15]);
+        messageSchedule[2] = (dec(year/10) << 24)|(dec(year%10) << 16)|(dec(mes/10) << 8)|(dec(mes%10));
+        messageSchedule[3] = (dec(dia/10) << 24)|(dec(dia%10) << 16)|(datain[14] << 8)|(datain[15]);
         messageSchedule[4] = (datain[16] << 24)|(datain[17] << 16)|(datain[18] << 8)|(0x00000080);
 
         messageSchedule[15]|= 0x00000000 | (19*8);
@@ -94,10 +97,10 @@ __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout) {
                 unsigned int acc =  context_state[jm] + shadowRegister[jm];
                 unsigned char im = (j >> 1) & 0x0000003;
                 unsigned char hm = (acc >> (24- im*8)) & 0x000000ff;
-                messageSchedule[i] = (hex[hm >> 4] << 24) | (hex[hm %16] << 16);
+                messageSchedule[i] = (hex(hm >> 4) << 24) | (hex(hm %16) << 16);
                 im= ((j+2) >> 1) & 0x0000003; 
                 hm = (acc >> (24- im*8)) & 0x000000ff;
-                messageSchedule[i]|= (hex[hm >> 4] << 8) | (hex[hm %16] );
+                messageSchedule[i]|= (hex(hm >> 4) << 8) | (hex(hm %16) );
         }
 
                 context_state[0] = 0x6a09e667;
@@ -187,8 +190,8 @@ __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout) {
 #pragma unroll 4
                  for (int i = 0; i < 4; i++) {
                         unsigned char h= (acc >> (24 - i * 8)) & 0x000000ff;
-                        strdataout[64*hilo+2*(i + 4 * j)]= hex[h >> 4 ];
-                        strdataout[64*hilo+2*(i + 4 * j)+1]= hex[h%16];                      
+                        strdataout[64*hilo+2*(i + 4 * j)]= hex(h >> 4 );
+                        strdataout[64*hilo+2*(i + 4 * j)+1]= hex(h%16);                      
                 }
                 }
 
