@@ -33,10 +33,9 @@ int myStrCmp(const void *s1, const void *s2) {
 }
 
 int main(int argc, char* argv[]) {
-        //cudaSetDevice();
-#ifndef NDEBUG
-	cudaCheck(cudaDeviceReset());
-#endif
+        //cudaSetDevice(0);
+	//hashtestGPU<<<1, 1>>>();
+	//cudaCheck(cudaDeviceReset());
         FILE *f = fopen("./somehashes.txt", "r");
         typedef char fixed_string[65];
         fixed_string *hashes;
@@ -52,15 +51,19 @@ int main(int argc, char* argv[]) {
     
         unsigned char *o,*h;
         unsigned char * hash;
-        hash=(unsigned char *) malloc(64*31*12*90*2*23+1);
-
-        printf("%d ",cudaMalloc(&o,20));
+        hash=(unsigned char *) malloc(64*31*12*100*2*23+1);
+        printf("lets allocate\n");
+        cudaDeviceSynchronize();
+        cudaDeviceSetCacheConfig(cudaFuncCachePreferL1);
+        printf("Cuda status: %s\n", cudaGetErrorString( cudaGetLastError() ) ); 
+        cudaMalloc(&o,20);
+        printf("Cuda status: %s\n", cudaGetErrorString( cudaGetLastError() ) );
         printf("%d \n",cudaMalloc(&h,64*31*12*90*23));
     char * prov[]={"08","25", "43", "17"};
-    for (int trito=0;trito<1+000;trito++){
-        int dni=93359;
+    for (int trito=757;trito<758;trito++){
+        int dni=0;
       //for (int dni=50000; dni <50001 ;dni++) {
-        for (int pr=0; pr <2; pr++){
+        for (int pr=0; pr <4; pr++){
         char distrito[6];
         sprintf(distrito, "%.2s%03d",prov[pr],trito);
         char base[20];
@@ -72,18 +75,9 @@ int main(int argc, char* argv[]) {
         printf("base %s\n",base);
         //unsigned char hash0[]="4efd89e2f3bb5f32e35d9249b1d90693a5a4eea69cba351e8540a1799d2d0e3b";
         cudaCheck(cudaMemcpy(o, base, 20, cudaMemcpyHostToDevice));
-        /* K40M
-           (15) Multiprocessors, (192) CUDA Cores/MP:     2880 CUDA Cores
-              3*5  *32*6
-              23*100/15=153.333
-           <<< 15 * ....,31*12 
-             192/32=6
-          mejor 90 years * 23 letras.
-            <<90*23,31*12>> or 45*23,31*24
-        */
-        //sha256cat<<<40*23,31*15*2>>>(o,h);
-        dim3 threadsPerBlock(2,31*12);
-        sha256cat<<<450,threadsPerBlock>>>(o,h);
+        //sha256cat<<<80*23,31*15>>>(o,h);
+          dim3 threadsPerBlock(30,31);
+          sha256cat<<<15*3,threadsPerBlock>>>(o,h); //23 ahora detro del 
         //cudaMemcpy(hash,h,64*31*12*100,cudaMemcpyDeviceToHost);
         //printf("output %.64s\n",&hash[64*(12+31*5+31*12*65)]);
         //printf("output %.64s\n",hash);
@@ -104,7 +98,7 @@ int main(int argc, char* argv[]) {
                int dia = resto -( mes * 31);
                mes++;
                dia++;
-               year +=90;
+               year+=10;
             // if (dia==1 && mes==2 && year==96) {
                printf("%05d%c 19%02d%02d%02d %.5s encontrado %.64s %d \n", dni,letrasDNI[letra],
                        year, mes, dia, distrito, &hash[64*x],x);

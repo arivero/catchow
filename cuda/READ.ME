@@ -1,0 +1,10 @@
+compile with /usr/local/cuda/bin/nvcc   --resource-usage  -O3  mainpar.cu sha256unroll5.cu -Xcompiler -fopenmp -o testpar 
+or something similar, including arch=...
+
+Algorithm taken mostly from https://github.com/SethosII/birthday-attack but adapted to this particular case.
+
+Major problem is that any minor mod of sha256Transform increases the need of variables by 48 unsigned ints.
+To avoid it, we explicit the use of mod, making messageSchedule a sort of circular buffer.
+
+When building, you will need to alter the number of threads per block, so that it fits in the target platform 
+(compiler does not tell us if it does). Also, you could try different limits of the number of registers. 

@@ -22,18 +22,19 @@ __device__ void printHash(unsigned char* hash, int length);
 //		unsigned int iterations);
 //__device__ void reduceSha256(unsigned char* hash, unsigned char* reducedHash);
 __device__ unsigned int rotateRight(unsigned int a, unsigned int b);
-__device__ void sha256(unsigned char* data, unsigned char* hash,
-		unsigned int iterations);
+//__device__ void sha256(unsigned char* data, unsigned char* hash,
+//		unsigned int iterations);
 __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout); 
-__device__ void sha256Init(sha256Context* context);
-__device__ void sha256Final(sha256Context* context, unsigned char* hash);
+//__device__ void sha256Init(sha256Context* context);
+//__device__ void sha256Final(sha256Context* context, unsigned char* hash);
 __device__ void sha256Transform(sha256Context* context, unsigned char* data);
-__device__ void sha256Update(sha256Context* context, unsigned char* data,
-		unsigned int length);
+//__device__ void sha256Update(sha256Context* context, unsigned char* data,
+//		unsigned int length);
 __device__ unsigned int sigma0(unsigned int x);
 __device__ unsigned int sigma1(unsigned int x);
 __device__ unsigned int stringLength(unsigned char* str);
 //__device__ void testReduceSha256();
+//__device__ void testSha256LongInput();
 
 __forceinline__ __device__ unsigned int choice(unsigned int x, unsigned int y,
 		unsigned int z) {
