@@ -54,7 +54,7 @@ __global__ void sha256cat(unsigned char* datain, unsigned char* strdataout) {
         long int hilo=(blockDim.y*blockIdx.y+threadIdx.y)*blockDim.x*gridDim.x +(blockDim.x*blockIdx.x+threadIdx.x);
         //long int hilo= ( blockIdx.x*blockDim.x + threadIdx.x);
         //int letra = hilo/(100*31*12);
-        hilo = hilo /10 ; //para ver si ahora tarda 90 segundos o menos
+        //hilo = hilo /10 ; //para ver si ahora tarda 90 segundos o menos
         int fecha= hilo; //- letra*31*12*100;
         hilo=fecha+letra*(90*31*12);  //solo 90 el year!!
         int year= fecha / (31*12);

@@ -75,9 +75,24 @@ int main(int argc, char* argv[]) {
         printf("base %s\n",base);
         //unsigned char hash0[]="4efd89e2f3bb5f32e35d9249b1d90693a5a4eea69cba351e8540a1799d2d0e3b";
         cudaCheck(cudaMemcpy(o, base, 20, cudaMemcpyHostToDevice));
+<<<<<<< HEAD
         //sha256cat<<<80*23,31*15>>>(o,h);
           dim3 threadsPerBlock(30,31);
           sha256cat<<<15*3,threadsPerBlock>>>(o,h); //23 ahora detro del 
+=======
+        /* K40M
+           (15) Multiprocessors, (192) CUDA Cores/MP:     2880 CUDA Cores
+              3*5  *32*6
+              23*100/15=153.333
+           <<< 15 * ....,31*12 
+             192/32=6
+          mejor 90 years * 23 letras.
+            <<90*23,31*12>> or 45*23,31*24
+        */
+        //sha256cat<<<40*23,31*15*2>>>(o,h);
+        dim3 threadsPerBlock(1,31*12);
+        sha256cat<<<45*2,threadsPerBlock>>>(o,h);
+>>>>>>> 14fd113cbd2990fb256925d85feefef8916138ab
         //cudaMemcpy(hash,h,64*31*12*100,cudaMemcpyDeviceToHost);
         //printf("output %.64s\n",&hash[64*(12+31*5+31*12*65)]);
         //printf("output %.64s\n",hash);
